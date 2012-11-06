@@ -1,1 +1,1 @@
-var a = require('./dataServer/server.js');
+var server = require('./dataServer/server.js');
