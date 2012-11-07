@@ -4,22 +4,311 @@
 	<title>node.js 데이터 긁어오기</title>
 	<meta charset="UTF-8">
 	<style>
-		a { color:#666; text-decoration: none; }
-		a:hover { color:#ff2000; }
+		html,body { height:100%; margin:0; }
+		h1,h2,h3,h4,h5,h6 { margin:0; }
+		ul,li { padding:0; margin:0; list-style:none; }
+		a { color:#666; text-decoratioxn: none; }
+		a:hover { text-decoration: underline; }
+		.off { display:none; }
+		.on { display:block; }
+		
+		#tabMenu { width:360px; height:360px; border:1px solid #666; background:#f0f0f0; overflow:hidden; font-family: arial; color:#666 }
+		#tabMenu .menu { overflow:hidden; }
+		#tabMenu .menu > li { float:left; width:118px; height:40px; border-right:1px solid #666; border-left:1px solid #fff; text-align:center; margin:4px 0; }
+		#tabMenu .menu > li:nth-child(3) { width:119px; border-right:0; }
+		#tabMenu .menu > li a { display:block; width:80px; margin:0 auto; color:#666; text-decoration: none; height:42px; padding-top:2px; }
+		#tabMenu .menu > li a:hover { text-decoration: underline; }
+		#tabMenu .menu > li .oneLine { height:34px; padding-top:10px; }
+		
+		#tabMenu .tabCont { width:360px; height: 287px; overflow-y: scroll; overflow-x: hidden; border-top:1px solid #666; }
+		#tabMenu .tabCont .tabNav { width:345px; height:34px; border-bottom:1px solid #666; padding-left:15px; }
+		#tabMenu .tabCont .tabNav > li { float:left; padding:7px 8px 3px; }
+		#tabMenu .tabCont .tabBar { width:360px; padding:6px 0 7px; border-bottom:1px solid #666; border-top:1px solid #fff; overflow:hidden; }
+		#tabMenu .tabCont .tabBar .thumb { float:left; width:70px; margin-right:10px; }
+		#tabMenu .tabCont .tabBar .thumb img { width:50px; height:50px; margin:0 0 0 15px; }
+		#tabMenu .tabCont .tabBar .innerCont { float:left; width:260px; padding-top:7px; }
+		#tabMenu .tabCont .tabBar .innerCont p,
+		#tabMenu .tabCont .tabBar .innerCont h4 { width:260px; overflow:hidden; text-overflow:ellipsis; white-space: nowrap;}
+		#tabMenu .tabCont .tabBar .innerCont p { margin:5px 0 0; }
+		
+		#tabMenu .tabCont .tabBar > h4 { padding:5px 0 5px 15px; }
+		#tabMenu .tabCont .tabBar > p { margin:0; padding-left:15px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+		#tabMenu .tabCont .tabBar > a { padding-left: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+		
+		#tabMenu .tabNot { width:360px; padding-top:3px; border-top:1px solid #666; }
+		#tabMenu .tabNot ul { float:left; width:270px; padding-left:10px; }
+		#tabMenu .tabNot ul li { width:280px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; }
+		#tabMenu .tabNot .arrBtn { float:left; width:50px; padding-left:30px; }
+		#tabMenu .tabNot .arrBtn button { float:left; width:20px; border:0; padding:0; margin:1px 5px 0 0; background:none; cursor:pointer; }
+		#tabMenu .tabNot ul li .notice:before { content:"[공지] " }
+		#tabMenu .tabNot ul li .alert:before { content:"[경고] " }
+		
+		#tabMenu #layer { position:absolute; left:50%; top:50%; padding:0; z-index:3; }
+		#tabMenu #layer.tabBar .thumb { float:none; width:100%; height:100%; margin:0; }
+		#tabMenu #layer.tabBar img { width:100%; height:100%; margin:0; }
+		#tabMenu #layer.tabBar .innerCont { position:absolute; float:none; width:98.5%; padding-left:1.5%; overflow:hidden; bottom:0; left:0; background:#000; opacity: .8; color:#fff; }
+		#tabMenu #layer.tabBar .innerCont > p { width:100%; overflow:auto; white-space: normal; padding-bottom:7px; }
+		
+		#doc #layer { position:absolute; left:50%; top:50%; width:720px; height:620px; overflow-y:scroll; margin-left:-360px; margin-top:-310px; background:#fff;}
+		#doc #layer.tabBar > p { white-space: normal; overflow:auto; padding:0 15px; }
+		#dimd { position:absolute;left:0; top:0; width:100%; height:100%; background:#666; opacity: 0.6; z-index:2; }
 	</style>
 </head>
 <body>
-	<ul id="newsCliping">
-	</ul>
+		<div id="tabMenu">
+			<ul id="menu" class="menu">
+				<li><a href="#" rel="rTime">실시간형<br/>모듈</a></li>
+				<li><a href="#" rel="doc" class="oneLine">문서도구</a></li>
+				<li><a href="#" rel="down" class="oneLine">다음뉴스</a></li>
+			</ul>
+			<div id="rTime" class="tabCont">
+				<ul id="tabNavi" class="tabNav">
+					<li><a href="#">NOW</a></li>
+					<li><a href="#">PAST</a></li>
+					<li><a href="#">NEXT</a></li>
+					<li><a href="#">MORE</a></li>
+				</ul>
+				<div id="now" class="on">
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lego.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lego.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lego.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lego.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lego.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+				</div>
+				<div id="past" class="off">
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cyLogo.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cyLogo.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cyLogo.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cyLogo.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cyLogo.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+				</div>
+				<div id="next" class="off">
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cocktail.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cocktail.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cocktail.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cocktail.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/cocktail.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+				</div>
+				<div id="more" class="off">
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lemonSoda.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lemonSoda.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lemonSoda.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lemonSoda.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+					<div class="tabBar">
+						<div class="thumb">
+							<img src="img/lemonSoda.jpg" alt=""/>
+						</div>
+						<div class="innerCont">
+							<h4>프랑스에서</h4>
+							<p>프랑스 한 카페에 전시되어있던 레고. 옐로우 계통의 인테리어와 아담한 레고가 돋보이는 구조였다.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="doc" class="tabCont off">
+				<div class="tabBar">
+					<h4>문서 제목</h4>
+					<p>안녕하세요. 길입니다. 슈퍼세븐 공연취소로 인하여 고개 숙여 죄송한 마음뿐이지만 마지막 이야기는 해야 하는게 도리인듯 싶어 이렇게 글을 올려봅니다. 올해초 드디어 슈퍼세븐 공연을 하기로 마음을 먹고 리쌍도 작은 도움이지만 멤버들과 한 맘으로 연습을 시작하며 너무 행복한 시간을 보내게 되었습니다. 멤버들이 악기를 하나둘씩 배워가며 점점 재미를 붙이기 시작했고 바쁜 스케줄속에 일주일에 3~4번씩 모여 밴드 연습을 하게 되었습니다. 하지만 그 쯤에서 유료화와 무료화의 두 갈림길에서 고민하기 시작하게 되었습니다. 그러던중 우리나라 최고 연출가 선배들의 조언도 들어보고 자체적으로도 멤버들과 리쌍 컴퍼니스탭들과 모여 많은 고심 끝에 방송에서는 여건상 보여주지 못했던 최고의 음향, 최고의 무대, 조명, 서비스 등등 세계시장에 나가도 손색이 없을 만한 대한민국 최고 블록버스터 공연을 만들어보자로 의견이 모아졌고 그로인해 유료화 공연으로 결정하게 되었습니다. 
+방송국이나 대기업스폰행사가 아닌 이상 무료 공연은 힘들다는것을 여러분들도 알고 계시리라 믿습니다. 그리고 그에 따른 수입금은 1차적으로 공연 중 정말 재미있게 많은 관중들 앞에서 기부라는 것이 즐거운일이다...라는 것을 보여주고 싶은 마음에 어려운분들에게 자동차선물, 등등 버라이어티한 연출을 준비하고 있었고 2차적으로 모든 투어가 끝나고 난 뒤 수익금을 가지고 사람들에게 무슨 일로 보답 할 수 있을까로 여러가지 고민을 하고 있던 중이였습니다. 사실 이 부분에서 고아원 양로원 건물신축 증정, 장학금제도, 자선단체설립 등등 큰 이야기를 펼쳐나가는 상황이라 구체적이지는 않았지만 정말 여러가지 재미난 아이디어들이 많았습니다. 이제는 보여드릴 수 없는 일들이 되어 버렸지만요. 간절히 말씀드리지만 멤버들이 공연을 통해 많은 수익을 창출하기 위함이 아니라 무대위에서 그리고 공연이 끝나고 난 뒤 무도스타일로 세상에 다시 돌려 드릴려고 생각하고 있었습니다. 저희 리쌍컴퍼니도 그런뜻으로 시작했고 정말 아끼며 살아오며 공연에 모든걸 쏟아붙자라는 마인드로 힘차게 준비해 왔습니다. 하지만 끝나면 알아주시겠지 믿어주시겠지라고 생각했던 저의 판단이 초래한 여러 가지 안좋은 상황 때문에 오랜 시간 믿어주신 무한도전 시청자 여러분들을 혼란스럽게 해드린 점 진심으로 사과 드립니다. 여러분 멤버들은 공연을 모릅니다. 멤버들은 무대를 모릅니다. 멤버들은 전문적으로 춤을 추고 노래하는 가수가 아닙니다. 하지만 멤버들은 우리만의 색깔로 멋진 무대를 위해 지금 이 시간까지 열심히 연습하고 있었습니다. 시청자들에게 받은 사랑을 세상에 더 크게 돌려드리기 위해 정성껏 준비하고 있었습니다. 모든 결정과 모든 진행은 제가 직접 진행했고 멤버들은 공연을 만들어온 저만 믿고 여기까지 오게 되었습니다. 모든 잘못은 제가 만들어낸 것입니다. 다시 한번 죄송하다는 말씀을 고개 숙여 사과 드립니다. 더 이상 이 일로 인해 수많은 오해와 억측으로 멤버들과 제작진 시청자분들의 마음이 다치는 일이 없었으면 하는 바램으로 글을 올려봅니다. 무한도전 제작진과 시청자는 저희에게 가족 이상의 사랑입니다. 받은 사랑이 얼마나 큰지 글로 헤아릴수 없습니다. 컴퍼니 홈페이지에 무한도전과 무관하다는 글의 속뜻은 본 공연은 방송이 아니다라는 뜻이였고 제작진과 결정한 부분이였지만 그 부분 또한 제가 유연하게 설명하지 못해 일어난 제 실수입니다. 정말 다시 한번 죄송합니다. 어제 최소 결정을 내리고 멤버들과 얼굴을 맞대고 아침까지 이야기를 나누었습니다. 멤버들도 시간이 흐르면 언젠가 다시 한번 시작해보자라는 말로 화이팅 하고 있으니 여러분들도 많은 힘을 주셨으면 하는 바램입니다. 방송에서도 더욱 더 힘을 모아 열심히 빅재미 만들어 가자고 소주한잔에 서로를 위로했습니다. 여러분들 제발 더 이상 멤버들과 제작진의 마음이 상처받지 않았으면 좋겠습니다. 슈퍼세븐을 준비하며 수개월간 도와준 댄스팀, 리쌍유랑극단, 무한도전 작가님들, 리쌍컴퍼니 직원분들 기달려 주신 수 많은 스탭 여러분 약속을 지키지 못해 정말 죄송합니다. 마지막으로 저는 죄송한 마음으로 떠나겠습니다. 개리도 마찬가지 죄송한 마음으로 프로그램을 떠나기로 했습니다. 3년동안 정말 진심으로 무한도전을 사랑하고 시청자들에게 받은 사랑에 감사하며 보낸 시간이였습니다. 고마웠습니다.
+</p>
+				</div>
+				<div class="tabBar">
+					<h4>문서 제목</h4>
+					<p>이 문서는 전라남도 보령시에 살고 계신 한 할머니가 직접...</p>
+				</div>
+				<div class="tabBar">
+					<h4>문서 제목</h4>
+					<p>이 문서는 전라남도 보령시에 살고 계신 한 할머니가 직접...</p>
+				</div>
+				<div class="tabBar">
+					<h4>문서 제목</h4>
+					<p>이 문서는 전라남도 보령시에 살고 계신 한 할머니가 직접...</p>
+				</div>
+				<div class="tabBar">
+					<h4>문서 제목</h4>
+					<p>이 문서는 전라남도 보령시에 살고 계신 한 할머니가 직접...</p>
+				</div>
+			</div>
+			<div id="down" class="tabCont off">
+				<ul id="downUl">
+				</ul>
+			</div>
+			<div id="notice" class="tabNot">
+				<ul
+					><li class="on"><a href="#" class="notice">내용 첫번째 입니다. 프랑스에서는 치즈가 유행한다는데 그 이유가..</a></li
+					><li class="off"><a href="#" class="alert">내용 두번째 입니다. 프랑스에서는</a></li
+					><li class="off"><a href="#" class="notice">내용 세번째 입니다. 프랑스에서는</a></li
+					><li class="off"><a href="#" class="alert">내용 네번째 입니다. 프랑스에서는</a></li
+				></ul>
+				<div class="arrBtn">
+					<button type="button" title="이전" onclick="p()">&lt;</button>
+					<button type="button" title="다음" onclick="n()">&gt;</button>
+				</div>
+			</div>
+		</div>
 	<script src="http://media.daum.net/common/wing.data"></script>
 	<script type="text/javascript">
 		var animal = function(tit,url) {
 			var li = document.createElement('li')
 			, a = document.createElement('a');
+			li.setAttribute('class', 'tabBar')
 			a.textContent = tit;
 			a.setAttribute('href',url);
+			a.setAttribute('target', '_blank');
 			li.appendChild(a);
-			var ul = document.getElementById('newsCliping');
+			var ul = document.getElementById('downUl');
 			ul.appendChild(li);
 		}
 		var data = window.wing_primary_sisa.component.data
@@ -29,6 +318,89 @@
 			, url = data[i].component.data[0].url
 			, test = new animal(tit,url);
 		}
+	</script>
+	<script type="text/javascript">
+		var cid = function(id) { //getElementById
+		    var tmp = id === "body" ? document.body : document.getElementById(id);
+			return tmp;
+		},
+		ctn = function(tn,id) { //getElementsByTagName
+			var tmp = id ? cid(id).getElementsByTagName(tn) : document.body.getElementsByTagName(tn);
+			return tmp;
+		}, 
+		ccn = function(cn,id,tn) {
+			var tmp = id ? tn ? ctn(tn,id) : ctn('*',id) : ctn('*'), ln = tmp.length, i = 0, j = 0, atmp = new Array();
+			for(i; i < ln; i++) {
+				if(tmp[i].className === cn) {
+					atmp[j] = tmp[i];
+					j++;
+				}
+			};
+			return atmp;
+		} //getElementsByClassName
+		
+		var tabNavs = ctn("a","tabNavi");
+		for(var i = 0; i < tabNavs.length; i++) {
+		    tabNavs[i].onclick = function() {
+				var cont = this.textContent.toLowerCase(),
+					offC = ccn("on","rTime");
+					offC[0].className = "off";
+				cid(cont).className = cid(cont).className === "off" ? cid(cont).className = "on" : cid(cont).className = "off";
+			}
+		}
+		var tabMenu = ctn("a","menu");
+		for(var i = 0; i < tabMenu.length; i++) {
+			tabMenu[i].onclick = function() {
+				var tmp = ccn("tabCont","tabMenu"),
+					rel = this.getAttribute("rel");
+					tmp[0].className = "tabCont off";
+				cid(rel).className = "tabCont";
+			}
+		};
+		var lp = ccn("tabBar","tabMenu");
+		for(var i = 0; i < lp.length; i++) {
+			lp[i].onclick = function() {
+				imgs = this.getElementsByTagName("img");
+				img = imgs[0];
+				this.style.width = img.naturalWidth+"px";
+				this.style.height = img.naturalHeight+"px";
+				this.style.marginLeft = "-" + img.naturalWidth / 2 + "px";
+				this.style.marginTop = "-" + img.naturalHeight / 2 + "px";
+				if(cid("layer")) cid("layer").removeAttribute("id");
+				this.id = "layer";
+				if(!cid("dimd")) {
+					var dimd = document.createElement("div")
+					dimd.id = "dimd";
+					document.body.appendChild(dimd);
+				}
+				cid("dimd").onclick = function() {
+					cid("layer").removeAttribute("style");
+					cid("layer").removeAttribute("id");
+					var dimd = cid("dimd");
+					document.body.removeChild(dimd);
+				}
+			}
+		};
+		var n = function() {
+			noti = ccn("on","notice");
+			if(noti[0].nextSibling === null) {
+				lis = ctn("li","notice");
+				lis[0].className = "on";
+			} else {
+				noti[0].nextSibling.className = "on"
+			}
+			noti[0].className = "off";
+		},
+		p = function() {
+			noti = ccn("on","notice");
+			if(noti[0].previousSibling === null) {
+				lis = ctn("li","notice");
+				lis[3].className = "on";
+			} else {
+				noti[0].previousSibling.className = "on"
+			}
+			noti[0].className = "off";
+		};
 	</script>
 </body>
 </html>
